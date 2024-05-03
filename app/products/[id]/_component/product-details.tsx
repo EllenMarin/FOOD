@@ -38,7 +38,7 @@ const ProductDetails = ({
     });
 
     return ( 
-        <div className="py-5 relative z-50 mt-[-1.5rem] rounded-tl-3xl bg-white">
+        <div className="py-5 relative z-50 mt-[-1.5rem] rounded-tl-3xl rounded-tr-3xl bg-white">
         <div className="flex items-center gap-[0.375rem] px-5">
             <div className="relative h-6 w-6">
                 <Image 
@@ -119,14 +119,9 @@ const ProductDetails = ({
                 <span className="text-xs">Entrega</span>
                 <TimerIcon size={14}/>
             </div>
-            {Number(product.restaurant.deliveryFee) > 0 ? (
-                <p className="text-xs font-semibold">
-                    {formatCurrency(Number(product.restaurant.deliveryFee))}
-                </p>
-            ) : (
-                <p className="text-xs font-semibold">Grátis</p>
-            
-            )}
+            <p className="text-xs font-semibold">
+                {product.restaurant.deliveryTimeMinutes} min
+            </p>
          </div>
         </Card>
         </div>
@@ -141,6 +136,10 @@ const ProductDetails = ({
         <div className="mt-6 space-y-3">
             <h3 className=" font-semibold px-5">Sucos</h3>
             <ProductList products={complementaryProducts} />
+        </div>
+
+        <div className="mt-6 px-5">
+            <Button className="w-full font-semibold">Adicionar ao carrinho</Button>
         </div>
     </div>
      );
