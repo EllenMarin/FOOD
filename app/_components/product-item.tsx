@@ -1,3 +1,4 @@
+"use client";
 import { Prisma, Product } from "@prisma/client";
 import Image  from "next/image";
 import { calculateProductTotalPrice } from "../_lib/_helpers/price";
@@ -15,6 +16,7 @@ interface ProductItemProps {
             };
         };
     }>;
+    className?: string;
 }
 
 const ProductItem = ({ product }: ProductItemProps) => {

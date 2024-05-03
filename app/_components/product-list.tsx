@@ -7,15 +7,13 @@ interface ProductListProps {
             restaurant: {
                 select: {
                     name:true;
-                }
-            }
-        }
+                };
+            };
+        };
     }> [];
 }
 
-const ProductList = async ({products}: ProductListProps) => {
-    
-
+const ProductList = ({products}: ProductListProps) => {
     return (
        <div className="flex overflow-x-scroll [&::-webkit-scrollbar]:hidden gap-4 px-5">
         {products.map((product) => (
