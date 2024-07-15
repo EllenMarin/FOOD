@@ -27,7 +27,10 @@ const RecommendedProductsPage = async () => {
             </h2>
             <div className="grid grid-cols-2 gap-6 ">
             {products.map((product) => (
-            <ProductItem key={product.id} product={product} className="min-w-full max-w-full"/>
+            <ProductItem 
+            key={product.id} 
+            product={product} 
+            className="min-w-full max-w-full"/>
             ))}
         </div>
         </div>
