@@ -13,6 +13,7 @@ import DeliveryInfo from "@/app/_components/delivery-info";
 import { CartContext } from "@/app/_context/cart";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/app/_components/ui/sheet";
 import Cart from "@/app/_components/cart";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/app/_components/ui/alert-dialog";
 
 interface ProductDetailsProps{
     product: Prisma.ProductGetPayload<{
@@ -33,15 +34,29 @@ const ProductDetails = ({
 }: ProductDetailsProps) => {
     const [quantity, setQuantity] = useState(1);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
 
-    const {addProductToCart, products} = useContext(CartContext)
+    const {addProductToCart, products} = useContext(CartContext);
 
-    console.log(products)
+    const addToCart = ({ emptyCart }: {emptyCart?: boolean}) => {
+        addProductToCart({product, quantity, emptyCart});
+        setIsCartOpen(true);
+    };
 
     const handleAddToCartClick = () => {
-        addProductToCart(product, quantity);
-        setIsCartOpen(true)
-    }
+        const hasDifferentRestaurantProduct = products.some(
+            (cartProduct) => cartProduct.restaurantId != product.restaurantId,
+        );
+        
+        if(hasDifferentRestaurantProduct) {
+        return setIsConfirmationDialogOpen(true);
+        }
+
+        addToCart({
+            emptyCart: false,
+        });
+
+    };
 
     const handleIncreaseQuantityClick = () => 
     setQuantity((currencyState) => currencyState + 1);
@@ -140,6 +155,25 @@ const ProductDetails = ({
             <Cart/>
         </SheetContent>
     </Sheet>
+
+    <AlertDialog 
+        open={isConfirmationDialogOpen}
+        onOpenChange={setIsConfirmationDialogOpen}
+        >
+        <AlertDialogContent>
+            <AlertDialogHeader>
+            <AlertDialogTitle>Você só pode adicionar itens de um restaurante por vez</AlertDialogTitle>
+            <AlertDialogDescription>
+                Deseja mesmo adicionar esse produto? Isso limpará seu carrinho
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => addToCart({emptyCart: true })}>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+
     </>
      );
 };

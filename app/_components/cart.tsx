@@ -11,14 +11,17 @@ import { Button } from "./ui/button";
 const Cart = () => {
     const { products, subTotalPrice, totalPrice, totalDiscount } = useContext(CartContext);
     return ( 
-        <div className="py-5">
-            <div className="space-y-4">
-                {products.map((product) =>(
-                <CartItem key={product.id} cartProduct={product} />
-                ))}
-            </div>
+        <div className="py-5 flex h-full flex-col">
+            
 
-        <div className="mt-6">
+    {products.length > 0 ? (
+        <> 
+            <div className="space-y-4 flex-auto">
+                    {products.map((product) =>(
+                    <CartItem key={product.id} cartProduct={product} />
+                    ))}
+                </div>
+            <div className="mt-6">
             <Card>
                 <CardContent className="space-y-2 p-5">
                     <div className="flex items-center justify-between text-xs">
@@ -38,10 +41,10 @@ const Cart = () => {
                     <div className="flex items-center justify-between text-xs">
                         <span className="text-muted-foreground">Entrega</span>
                         
-                        {Number(products[0].restaurant.deliveryFee) == 0 ? (
+                        {Number(products?.[0].restaurant.deliveryFee) == 0 ? (
                             <span className="uppercase text-primary">Grátis</span>
                         ) : (
-                            formatCurrency(Number(products[0].restaurant.deliveryFee))
+                            formatCurrency(Number(products?.[0].restaurant.deliveryFee))
                         )}
                     </div>
 
@@ -53,11 +56,13 @@ const Cart = () => {
                     </div>
                 </CardContent>
             </Card>
+            </div>
+
+            <Button className="mt-6 w-full">Confirmar e pagar</Button>
+        </>
+    ) : (<h2 className="text-left font-medium">Você ainda não adicionou nenhum produto á sua sacola</h2>
+    )}
         </div>
-
-        <Button className="mt-6 w-full">Confirmar e pagar</Button>
-
-    </div>
      );
 };
  

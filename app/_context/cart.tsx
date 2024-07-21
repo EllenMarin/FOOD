@@ -22,15 +22,23 @@ interface ICartContext {
     subTotalPrice: number;
     totalPrice: number;
     totalDiscount: number;
-    addProductToCart: (product: Prisma.ProductGetPayload<{
-        include: {
-            restaurant:{
-                select: {
-                    deliveryFee: true;
+    addProductToCart: ({ 
+        product, 
+        quantity, 
+        emptyCart, 
+    }: {
+        product: Prisma.ProductGetPayload<{
+            include: {
+                restaurant: {
+                    select: {
+                        deliveryFee: true;
+                    };
                 };
             };
-        };
-    }>, quantity: number) => void;
+        }>;
+        quantity: number;
+        emptyCart?: boolean | undefined;
+    }) => void
     decreaseProductQuantity: (productId: string) => void;
     increaseProductQuantity: (productId: string) => void;
     removeProductFromCart: (productId: string) => void;
@@ -48,7 +56,7 @@ export const CartContext = createContext<ICartContext>({
     
 });
 
-export const CartProvider = ({ children}: { children: ReactNode }) => {
+export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [products, setProducts] = useState<CartProduct[]>([]);
 
     const subTotalPrice = useMemo(() => {
@@ -101,7 +109,11 @@ export const CartProvider = ({ children}: { children: ReactNode }) => {
         return setProducts((prev) => prev.filter((product) => product.id != productId));
     }
 
-    const addProductToCart = (
+    const addProductToCart = ({
+        product,
+        quantity,
+        emptyCart,
+    }: {
         product: Prisma.ProductGetPayload<{
             include: {
                 restaurant:{
@@ -112,8 +124,13 @@ export const CartProvider = ({ children}: { children: ReactNode }) => {
             };
         }>,
         quantity: number,
-        
-        ) => {
+        emptyCart?: boolean,
+    }) => {
+            if(emptyCart) {
+                setProducts([]);
+            }
+
+               
         const isProductAlreadyOnCart = products.some(
             (cartProduct) => cartProduct.id == product.id,
         );
