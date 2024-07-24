@@ -9,7 +9,9 @@ extends Prisma.ProductGetPayload<{
     include: {
         restaurant: {
             select: {
+                id: true;
                 deliveryFee: true;
+                deliveryTimeMinutes: true;
             };
         };    
     };
@@ -43,6 +45,7 @@ interface ICartContext {
     decreaseProductQuantity: (productId: string) => void;
     increaseProductQuantity: (productId: string) => void;
     removeProductFromCart: (productId: string) => void;
+    clearCart: () => void 
 }
 
 export const CartContext = createContext<ICartContext>({
@@ -55,7 +58,7 @@ export const CartContext = createContext<ICartContext>({
     decreaseProductQuantity: () => {},
     increaseProductQuantity: () => {},
     removeProductFromCart: () => {},
-    
+    clearCart: () => {},
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -80,6 +83,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }, [products])
 
     const totalDiscount = subTotalPrice - totalPrice + Number(products?.[0]?.restaurant?.deliveryFee);
+
+    const clearCart = () => {
+        return setProducts([]);
+    };
 
     const decreaseProductQuantity = (productId: string) => {
         return setProducts((prev) =>
@@ -168,10 +175,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             totalPrice,
             totalDiscount,
             totalQuantity,
+            clearCart,
             addProductToCart, 
             decreaseProductQuantity, 
             increaseProductQuantity, 
-            removeProductFromCart 
+            removeProductFromCart, 
         }}>
         {children}
         </CartContext.Provider>
