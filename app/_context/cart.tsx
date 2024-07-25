@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Prisma, Product } from "@prisma/client";
 import { ReactNode, createContext, useMemo, useState } from "react";
 import ProductItem from "../_components/product-item";
@@ -34,7 +34,9 @@ interface ICartContext {
             include: {
                 restaurant: {
                     select: {
+                        id: true;
                         deliveryFee: true;
+                        deliveryTimeMinutes: true;
                     };
                 };
             };
@@ -133,7 +135,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             include: {
                 restaurant:{
                     select: {
+                        id: true;
                         deliveryFee: true;
+                        deliveryTimeMinutes: true;
                     };
                 };
             };
