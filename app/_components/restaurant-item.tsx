@@ -9,6 +9,7 @@ import Link from "next/link";
 import { cn } from "../_lib/utils";
 import { toggleFavoriteRestaurant } from "../_actions/restaurants";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 interface RestaurantItemProps{
     userId?: string;
@@ -24,17 +25,24 @@ const RestaurantItem = ({
     userFavoriteRestaurants,
 
 }: RestaurantItemProps) => {
+    const { data } = useSession();
     const isFavorite = userFavoriteRestaurants.some(
         (fav) => fav.restaurantId == restaurant.id,
     );
     const handleFavoriteClick = async () => {
-        if (!userId) return;
+        if (!data?.user.id) return;
         try{
-            await toggleFavoriteRestaurant(userId, restaurant.id);
+            await toggleFavoriteRestaurant(data?.user.id, restaurant.id);
             toast.success(
                 isFavorite
                 ? "Restaurante removido dos favoritos"
-                : "Restaurante adicionado aos favoritos",
+                : (
+                    <span>
+                      Restaurante adicionado aos favoritos! Veja seus favoritos em{" "}
+                      <Link href="/my-favorite-restaurants" className="text-blue-500 underline"> Favoritos
+                     </Link>.
+                    </span>
+                  )
             );
         }catch (error) {
             toast.error("Erro");
@@ -63,7 +71,7 @@ const RestaurantItem = ({
                         5.0
                     </span>
                 </div>
-                {userId && (
+                {data?.user.id && (
                     <Button 
                     size="icon"
                     className={`absolute right-2 top-2 bg-gray-400 rounded-full h-7 w-7 ${isFavorite && " bg-primary hover:bg-gray-700"}`}
